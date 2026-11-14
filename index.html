@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Tebak Suasana Hati & Khodam Galau - RUANG SAD</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+    :root {
+      --bg-dark: #05030a;
+      --card-bg: rgba(20, 14, 48, 0.98);
+      --neon-pink: #ff2a85;
+      --neon-cyan: #00f0ff;
+      --neon-gold: #ffd000;
+      --neon-purple: #9d4edd;
+      --aura-primary: #ff2a85;
+      --aura-secondary: #9d4edd;
+      --text-main: #ffffff;
+      --text-muted: #e2defa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #020107;
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Container 9:16 kompak & pas untuk live streaming HP */
+    .phone-frame {
+      width: 100%;
+      max-width: 430px;
+      min-height: 100vh;
+      background: radial-gradient(circle at 50% 10%, #32103f 0%, #0c061a 55%, #03010a 100%);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 5px;
+      padding: 5px 8px 8px;
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(255, 42, 133, 0.25);
+      transition: background 1s ease;
+    }
+
+    /* Ambient Aura Orbs */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.6;
+      transition: background 0.8s ease, transform 1s ease;
+      animation: floatOrb 7s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 220px; height: 220px; background: var(--aura-secondary); top: -40px; left: -40px; }
+    .orb-2 { width: 240px; height: 240px; background: var(--aura-primary); bottom: 20px; right: -60px; animation-delay: -3.5s; }
+
+    @keyframes floatOrb {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(20px, 28px) scale(1.15); }
+    }
+
+    #aura-bg-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header Section */
+    header {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      margin-top: 1px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 2px;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 42, 133, 0.25);
+      border: 1px solid rgba(255, 42, 133, 0.7);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      color: #ff85b8;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(255, 42, 133, 0.4);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      background: #ff2a85;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ff2a85;
+      animation: blink 1.1s infinite;
+    }
+
+    .audio-controls {
+      display: flex;
+      gap: 5px;
+    }
+
+    .audio-pill {
+      background: rgba(0, 240, 255, 0.14);
+      border: 1px solid rgba(0, 240, 255, 0.45);
+      color: #00f0ff;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .audio-pill.active-calm {
+      background: rgba(157, 78, 221, 0.3);
+      border-color: #c77dff;
+      color: #f3d9ff;
+    }
+
+    .audio-pill.muted {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.18);
+      color: #8c88a8;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    .main-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      line-height: 1.1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: linear-gradient(180deg, #ffffff 0%, #ffd6e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(255, 42, 133, 0.6));
+    }
+
+    .amp-symbol {
+      display: inline-block;
+      font-size: 18px;
+      background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0 2px;
+    }
+
+    .rezeki-text {
+      background: linear-gradient(90deg, #ffe600, #ff9e00, #ffd000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 12px rgba(255, 208, 0, 0.7));
+    }
+
+    .ruang-sad-badge {
+      display: inline-block;
+      margin-top: 1px;
+      padding: 3px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 42, 133, 0.3), rgba(157, 78, 221, 0.35));
+      border: 1.5px solid rgba(255, 42, 133, 0.8);
+      font-family: 'Fredoka', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: #ffffff;
+      text-shadow: 0 0 8px var(--neon-pink), 0 0 16px var(--neon-cyan);
+      text-transform: uppercase;
+      box-shadow: 0 0 14px rgba(255, 42, 133, 0.4);
+    }
+
+    /* Main Result Card */
+    .stage-area {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+    }
+
+    .aura-card-wrapper {
+      position: relative;
+      border-radius: 12px;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--aura-primary), var(--aura-secondary), var(--neon-gold), var(--aura-primary));
+      background-size: 300% 300%;
+      animation: auraFlow 4s ease infinite;
+      box-shadow: 0 0 16px var(--aura-primary), 0 0 25px rgba(157, 78, 221, 0.3);
+      transition: box-shadow 0.5s ease;
+    }
+
+    @keyframes auraFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .result-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 10px;
+      padding: 7px 9px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.8s ease;
+    }
+
+    .aura-card-wrapper.rolling {
+      animation: cardShake 0.14s infinite, auraFlow 0.8s linear infinite;
+    }
+
+    .aura-card-wrapper.reveal {
+      animation: popReveal 0.5s cubic-bezier(0.22, 1.4, 0.36, 1), auraFlow 3s ease infinite;
+    }
+
+    @keyframes cardShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-2px, 1px) rotate(-0.6deg); }
+      50% { transform: translate(2px, -1px) rotate(0.6deg); }
+      75% { transform: translate(-1px, -1px) rotate(-0.4deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    @keyframes popReveal {
+      0% { transform: scale(0.92); }
+      60% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+
+    .viewer-tag {
+      text-align: center;
+      margin-bottom: 2px;
+      position: relative;
+    }
+
+    .viewer-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 1px;
+      font-weight: 700;
+    }
+
+    .viewer-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff2a85 0%, #ffffff 30%, #00f0ff 60%, #ffd000 100%);
+      background-size: 250% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shinyNameMove 3s linear infinite, nameScalePulse 1.8s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 10px rgba(255, 42, 133, 0.8));
+      word-break: break-word;
+    }
+
+    @keyframes shinyNameMove {
+      0% { background-position: 0% center; }
+      100% { background-position: 250% center; }
+    }
+
+    @keyframes nameScalePulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.04); }
+    }
+
+    .khodam-showcase {
+      background: radial-gradient(circle at 50% 50%, rgba(255, 42, 133, 0.25) 0%, rgba(15, 9, 36, 0.95) 100%);
+      border: 1.5px solid rgba(255, 42, 133, 0.55);
+      border-radius: 9px;
+      padding: 5px 8px;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(255, 42, 133, 0.25);
+    }
+
+    .khodam-avatar-ring {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.5) 75%);
+      box-shadow: 0 0 8px var(--aura-primary), inset 0 0 5px var(--aura-secondary);
+    }
+
+    .khodam-emoji {
+      font-size: 20px;
+      line-height: 1;
+      filter: drop-shadow(0 0 5px var(--aura-primary));
+      animation: khodamActionBounce 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes khodamActionBounce {
+      0% { transform: translateY(0px) rotate(-5deg); }
+      100% { transform: translateY(-3px) rotate(5deg); }
+    }
+
+    .khodam-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .khodam-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #ff85b8;
+      margin-bottom: 1px;
+    }
+
+    /* UKURAN NAMA KHODAM DIPERBESAR SUPAYA JELAS DI LIVE */
+    .khodam-name {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.15;
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.7);
+    }
+
+    .khodam-power {
+      font-size: 11.5px;
+      color: #f0ecff;
+      margin-top: 1px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .info-box {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 5px 8px;
+      margin-bottom: 4px;
+      position: relative;
+    }
+
+    .info-box-title {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-bottom: 1px;
+    }
+
+    .mood-title { color: #ff7ab2; }
+    .rezeki-title { color: #ffd000; }
+    .warning-title { color: #ff4d4d; }
+
+    .info-box-value {
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: #ffffff;
+    }
+
+    .mood-line-1 { margin-bottom: 1px; }
+    
+    /* DESKRIPSI ISI DIPERBESAR & LEBIH TEBAL */
+    .mood-line-2 {
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      text-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    .warning-value {
+      color: #ffb3b3;
+      font-size: 13px;
+      font-weight: 800;
+      font-style: italic;
+      text-shadow: 0 0 4px rgba(255, 77, 77, 0.4);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      margin-bottom: 4px;
+    }
+
+    .stat-pill {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 7px;
+      padding: 4px 6px;
+      text-align: center;
+    }
+
+    .stat-pill span {
+      display: block;
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1px;
+      font-weight: 700;
+    }
+
+    /* NILAI AURA & HOKI DIPERBESAR */
+    .stat-pill strong {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--aura-primary);
+      text-shadow: 0 0 8px rgba(255, 42, 133, 0.7);
+    }
+
+    .host-quote {
+      background: linear-gradient(90deg, rgba(255, 42, 133, 0.22), rgba(157, 78, 221, 0.22));
+      border-left: 3px solid var(--aura-primary);
+      border-radius: 6px;
+      padding: 4px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      font-style: italic;
+      color: #ffffff;
+      line-height: 1.25;
+      text-shadow: 0 0 4px rgba(0,0,0,0.5);
+    }
+
+    /* Controls Section */
+    .controls-area {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .name-input {
+      width: 100%;
+      background: rgba(15, 12, 36, 0.95);
+      border: 1.5px solid rgba(255, 42, 133, 0.55);
+      border-radius: 9px;
+      padding: 8px 34px 8px 10px;
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .name-input::placeholder {
+      color: #9c95c4;
+      font-weight: 600;
+    }
+
+    .name-input:focus {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 10px rgba(255, 42, 133, 0.4);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #ffffff;
+      width: 19px;
+      height: 19px;
+      border-radius: 50%;
+      font-size: 9.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spin-btn {
+      width: 100%;
+      background: linear-gradient(90deg, #ff2a85 0%, #9d4edd 50%, #00f0ff 100%);
+      background-size: 200% auto;
+      border: none;
+      border-radius: 9px;
+      padding: 9px;
+      color: #ffffff;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255, 42, 133, 0.45);
+      transition: transform 0.15s, box-shadow 0.2s;
+      touch-action: manipulation;
+      animation: btnGradient 4s ease infinite;
+    }
+
+    @keyframes btnGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .spin-btn:active { transform: scale(0.97); }
+    .spin-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* History Strip */
+    .history-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .history-list {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex: 1;
+      padding: 1px 0;
+    }
+
+    .history-list::-webkit-scrollbar { display: none; }
+
+    .history-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 3px 7px;
+      font-size: 10px;
+      color: #dcd8f5;
+      white-space: nowrap;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .reset-history-btn {
+      background: rgba(255, 42, 133, 0.18);
+      border: 1px solid rgba(255, 42, 133, 0.4);
+      color: #ff85b8;
+      border-radius: 6px;
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Running Text */
+    .running-text-container {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      background: linear-gradient(90deg, rgba(255, 42, 133, 0.3), rgba(157, 78, 221, 0.3));
+      border: 1px solid rgba(255, 42, 133, 0.6);
+      border-radius: 7px;
+      padding: 4px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 0 10px rgba(255, 42, 133, 0.25);
+    }
+
+    .running-text-track {
+      display: inline-block;
+      animation: marqueeScroll 18s linear infinite;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 0 0 6px var(--neon-pink);
+    }
+
+    @keyframes marqueeScroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* LIVE CTA BOX */
+    .live-cta-box {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(35, 18, 65, 0.92), rgba(15, 8, 32, 0.96));
+      border: 1.5px solid rgba(255, 42, 133, 0.6);
+      border-radius: 9px;
+      padding: 6px 8px;
+      box-shadow: 0 0 14px rgba(255, 42, 133, 0.25), inset 0 0 8px rgba(0, 240, 255, 0.15);
+      text-align: center;
+    }
+
+    .cta-header-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #ff2a85, #ffd000, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 0 5px rgba(255, 42, 133, 0.5));
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .cta-item {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 7px;
+      padding: 5px 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .cta-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 8px rgba(255, 42, 133, 0.4);
+      border-color: var(--neon-pink);
+    }
+
+    .cta-emoji {
+      font-size: 17px;
+      line-height: 1;
+      margin-bottom: 2px;
+      filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.6));
+      animation: emojiPulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes emojiPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.15); }
+    }
+
+    .cta-label {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    .cta-sub {
+      font-size: 8px;
+      color: #ff85b8;
+      font-weight: 700;
+    }
+
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame" id="phoneFrame">
+    <canvas id="aura-bg-canvas"></canvas>
+    <canvas id="confetti-canvas"></canvas>
+    <div class="glow-orb orb-1" id="orb1"></div>
+    <div class="glow-orb orb-2" id="orb2"></div>
+
+    <header>
+      <div class="top-bar">
+        <div class="live-badge">
+          <span class="live-dot"></span> RUANG SAD
+        </div>
+        <div class="audio-controls">
+          <button type="button" class="audio-pill active-calm" id="calmMusicBtn">🎵 Musik</button>
+          <button type="button" class="audio-pill" id="soundToggle">🔊 SFX</button>
+        </div>
+      </div>
+      <h1 class="main-title">
+        Tebak Suasana Hati <span class="amp-symbol">&amp;</span> <span class="rezeki-text">Rezeki</span>
+      </h1>
+      <div class="ruang-sad-badge">RUANG SAD</div>
+    </header>
+
+    <main class="stage-area">
+      <div class="aura-card-wrapper" id="auraWrapper">
+        <div class="result-card" id="resultCard">
+          <div class="viewer-tag">
+            <span class="viewer-label">Hasil Deteksi Aura Untuk</span>
+            <div class="viewer-name" id="viewerName">Ketik Nama Penonton 👇</div>
+          </div>
+
+          <div class="khodam-showcase">
+            <div class="khodam-avatar-ring">
+              <div class="khodam-emoji" id="khodamEmoji">🥀</div>
+            </div>
+            <div class="khodam-details">
+              <div class="khodam-title">👻 Khodam Pendamping</div>
+              <div class="khodam-name" id="khodamName">Menunggu Pemanggilan...</div>
+              <div class="khodam-power" id="khodamPower">1.000.000+ pilihan khodam lokal &amp; galau siap terdeteksi!</div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-box-title mood-title">🎭 Suasana Hati Saat Ini</div>
+            <div class="info-box-value">
+              <div class="mood-line-1" id="moodLine1">Siap mendeteksi isi hati &amp; pikiran...</div>
+              <div class="mood-line-2" id="moodLine2">Tunggu sebentar sampai energi terhubung! ✨</div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-box-title rezeki-title">💰 Rezeki Kedepannya</div>
+            <div class="info-box-value">
+              <div class="mood-line-1" id="rezekiLine1">Menunggu nama masuk untuk dicek!</div>
+              <div class="mood-line-2" id="rezekiLine2">Ketik nama penonton yang kirim gift atau komen.</div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="info-box-title warning-title">⚠️ Peringatan Penting</div>
+            <div class="warning-value" id="warningValue">
+              Hati-hati dalam mengambil keputusan besar ke depannya!
+            </div>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-pill">
+              <span>Warna Aura</span>
+              <strong id="auraValue">💔 Patah Hati</strong>
+            </div>
+            <div class="stat-pill">
+              <span>Tingkat Hoki</span>
+              <strong id="luckValue">⚡ --%</strong>
+            </div>
+          </div>
+
+          <div class="host-quote" id="quoteValue">
+            &ldquo;Yang udah tap-tap layar &amp; kasih gift, namanya langsung dicek khodam &amp; rezekinya!&rdquo;
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="controls-area">
+      <div class="input-wrapper">
+        <input
+          type="text"
+          id="nameInput"
+          class="name-input"
+          placeholder="Ketik nama yg gift / komen..."
+          autocomplete="off"
+        />
+        <button type="button" class="clear-btn" id="clearBtn" title="Hapus teks">✕</button>
+      </div>
+
+      <button type="button" class="spin-btn" id="spinBtn">🔍 Cek sekarang</button>
+
+      <div class="history-bar">
+        <div class="history-list" id="historyList">
+          <span class="history-chip" onclick="quickTest('ica')">+ ica</span>
+          <span class="history-chip" onclick="quickTest('Sultan_Galau')">+ Sultan_Galau</span>
+        </div>
+        <button type="button" class="reset-history-btn" id="resetBtn">Reset</button>
+      </div>
+
+      <div class="running-text-container">
+        <div class="running-text-track">
+          🔥 BANTU SUPPORTNYA YA TEMAN-TEMAN! 🙏 TERIMA KASIH ATAS DUKUNGAN &amp; GIFT KALIAN SEMUA DI RUANG SAD! 🚀
+        </div>
+      </div>
+
+      <div class="live-cta-box">
+        <div class="cta-header-title">✨ DUKUNG LIVE KITA YUK GUYS! ✨</div>
+        <div class="cta-grid">
+          <div class="cta-item" onclick="triggerCtaAction('🌹 KIRIM MAWAR')">
+            <div class="cta-emoji">🌹</div>
+            <div class="cta-label">Mawar</div>
+            <div class="cta-sub">Gift Utama</div>
+          </div>
+          <div class="cta-item" onclick="triggerCtaAction('👆 TAP-TAP LAYAR')">
+            <div class="cta-emoji">👆</div>
+            <div class="cta-label">Tap-Tap</div>
+            <div class="cta-sub">Layar HP</div>
+          </div>
+          <div class="cta-item" onclick="triggerCtaAction('🔄 SHARE LIVE')">
+            <div class="cta-emoji">🔄</div>
+            <div class="cta-label">Share</div>
+            <div class="cta-sub">Sebarkan</div>
+          </div>
+          <div class="cta-item" onclick="triggerCtaAction('⭐ FOLLOW HOST')">
+            <div class="cta-emoji">⭐</div>
+            <div class="cta-label">Follow</div>
+            <div class="cta-sub">Biar Hoki</div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const poolGalau = [
+      {
+        theme: "patah_hati_berat",
+        bgGradient: "radial-gradient(circle at 50% 10%, #590d22 0%, #1a050a 55%, #050102 100%)",
+        cardBg: "rgba(40, 10, 18, 0.98)",
+        orb1: "#ff2a2a", orb2: "#8b0000",
+        aura: { label: "💔 Patah Hati Berdarah", primary: "#ff2a2a", secondary: "#8b0000" },
+        khodam: { name: "Kuntilanak Ompong Galau", emoji: "🥀" },
+        mood: ["Asli lagi galau berat ditinggal nikah mantan 💔", "Sumpah ini plot twist terpahit dalam hidup."],
+        rezeki: ["Rezeki seret parah karena sering meratapi nasib di kasur 🌪️", "Niatnya mau healing malah boncos di ongkos."],
+        warning: "Peringatan: Jangan pernah buka IG story mantan atau stalking jam 2 pagi!"
+      },
+      {
+        theme: "sad_boy_malam",
+        bgGradient: "radial-gradient(circle at 50% 10%, #172554 0%, #060e24 55%, #02040c 100%)",
+        cardBg: "rgba(10, 18, 42, 0.98)",
+        orb1: "#3b82f6", orb2: "#1d4ed8",
+        aura: { label: "🌧️ Biru Sad Boy Malam", primary: "#3b82f6", secondary: "#1d4ed8" },
+        khodam: { name: "Pocong Nyanyi Lagu Pamungkas", emoji: "🎸" },
+        mood: ["Duduk di pojokan kamar dengerin lagu galau mulu 🎧", "Ngerasa paling kesepian se-kecamatan."],
+        rezeki: ["Rezeki pas-pasan cuma cukup buat beli kopi saset ☕", "Dompet menipis seiring air mata yang menetes."],
+        warning: "Peringatan: Kurangi overthinking berlebihan sebelum tidur!"
+      },
+      {
+        theme: "kena_mental",
+        bgGradient: "radial-gradient(circle at 50% 10%, #4c1d95 0%, #1e1b4b 55%, #090514 100%)",
+        cardBg: "rgba(26, 11, 54, 0.98)",
+        orb1: "#8b5cf6", orb2: "#6d28d9",
+        aura: { label: "🌀 Ungu Kena Mental Total", primary: "#8b5cf6", secondary: "#6d28d9" },
+        khodam: { name: "Genderwo Ahli Overthinking", emoji: "🧠" },
+        mood: ["Mental down kena hujat netizen & omongan tetangga 😩", "Udah di titik paling lelah tapi harus senyum."],
+        rezeki: ["Rezeki nyangkut di awan entah kapan turunnya 📉", "Mau belanja apa-apa harus mikir tujuh keliling."],
+        warning: "Peringatan: Jangan ambil keputusan besar pas lagi emosi!"
+      },
+      {
+        theme: "di-ghosting",
+        bgGradient: "radial-gradient(circle at 50% 10%, #701a75 0%, #2e1065 55%, #0f051c 100%)",
+        cardBg: "rgba(45, 12, 64, 0.98)",
+        orb1: "#d946ef", orb2: "#a21caf",
+        aura: { label: "👻 Ungu Lembayung Ghosting", primary: "#d946ef", secondary: "#a21caf" },
+        khodam: { name: "Babi Ngepet Korban Ghosting", emoji: "💨" },
+        mood: ["Digantungin pas lagi sayang tanpa kejelasan 👻", "Chat cuma di-read doang bikin sakit dada."],
+        rezeki: ["Rezeki ikhlas hilang dibawa kabur harapan palsu 💸", "Modal PDKT habis tapi hasil nihil."],
+        warning: "Peringatan: Jangan gampang baper sama yang modal manis!"
+      },
+      {
+        theme: "tanggal_tua",
+        bgGradient: "radial-gradient(circle at 50% 10%, #3f3f46 0%, #18181b 55%, #09090b 100%)",
+        cardBg: "rgba(24, 24, 27, 0.98)",
+        orb1: "#71717a", orb2: "#3f3f46",
+        aura: { label: "🪙 Kelabu Tanggal Tua", primary: "#71717a", secondary: "#3f3f46" },
+        khodam: { name: "Tuyul Kocar-Kacir Utang", emoji: "💸" },
+        mood: ["Makan mi instan kuah air mata akhir bulan 🍜", "Rekening tinggal Rp 4.200 bikin kepala pusing."],
+        rezeki: ["Rezeki seret kayak keran air kemarau panjang 🏜️", "Menunggu keajaiban donasi dari sultan live."],
+        warning: "Peringatan: Jangan nambah utang baru sebelum lunas!"
+      },
+      {
+        theme: "jomblo_akut",
+        bgGradient: "radial-gradient(circle at 50% 10%, #831843 0%, #380414 55%, #120106 100%)",
+        cardBg: "rgba(54, 8, 22, 0.98)",
+        orb1: "#f43f5e", orb2: "#be123c",
+        aura: { label: "❤️ Jomblo Ngenes Abadi", primary: "#f43f5e", secondary: "#be123c" },
+        khodam: { name: "Sundel Bolong Jomblo Abadi", emoji: "🥀" },
+        mood: ["Ngenes banget tiap malam minggu di kamar 🛌", "Nonton orang bucin malah bikin dada sesak."],
+        rezeki: ["Rezeki aman tapi jodoh di-lock malaikat 🔒", "Sering ditanya 'kapan nikah?' pas kumpul keluarga."],
+        warning: "Peringatan: Jangan nge-chat mantan pas malam jumat!"
+      },
+      {
+        theme: "stres_kerja",
+        bgGradient: "radial-gradient(circle at 50% 10%, #78350f 0%, #291303 55%, #0f0601 100%)",
+        cardBg: "rgba(43, 19, 4, 0.98)",
+        orb1: "#f59e0b", orb2: "#b45309",
+        aura: { label: "🔥 Jingga Stres Pekerjaan", primary: "#f59e0b", secondary: "#b45309" },
+        khodam: { name: "Pocong Lembur Shift Malam", emoji: "💻" },
+        mood: ["Gaji UMR beban kerja serasa direktur utama 😩", "Mata panda permanen kurang tidur."],
+        rezeki: ["Gaji numpang lewat langsung disikat cicilan 💳", "Rezeki nomplok datengnya pas lagi apes."],
+        warning: "Peringatan: Jangan lupa istirahat, tubuhmu bukan robot!"
+      },
+      {
+        theme: "salah_pilih",
+        bgGradient: "radial-gradient(circle at 50% 10%, #064e3b 0%, #022c22 55%, #01110e 100%)",
+        cardBg: "rgba(6, 44, 34, 0.98)",
+        orb1: "#10b981", orb2: "#047857",
+        aura: { label: "🌿 Hijau Penyesalan", primary: "#10b981", secondary: "#047857" },
+        khodam: { name: "Babi Hutan Salah Jurusan", emoji: "🐗" },
+        mood: ["Nyesel banget kenapa dulu ngambil keputusan itu 🍃", "Merasa salah jalan & salah pilih pasangan."],
+        rezeki: ["Rezeki seret gara-gara salah investasi bodong 📉", "Harus merintis ulang dari nol besar."],
+        warning: "Peringatan: Jadikan kegagalan kemarin pelajaran!"
+      }
+    ];
+
+    const fallbackQuotes = [
+      '"Waduh khodamnya galau banget, wajib tap-tap layar biar sedihnya hilang!"',
+      '"Gak nyangka dapet khodam beban galau, sabar ya kak wkwk!"',
+      '"Aura kesedihannya pekat banget, ayo kirim gift biar hatinya tenang!"',
+      '"Duh zonk parah nih nasib percintaannya, mental baja ya!"',
+      '"Waduh cocok banget sama suasana hati penonton RUANG SAD hari ini!"',
+      '"Siap-siap mental kena mental, ramalannya bikin elus dada!"',
+      '"Udah ketebak khodam galaunya, gak bisa ngelak lagi!"'
+    ];
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let sfxEnabled = true;
+    let calmMusicEnabled = true;
+    let calmMusicStarted = false;
+    let calmTimer = null;
+
+    const soundToggleBtn = document.getElementById('soundToggle');
+    const calmMusicBtn = document.getElementById('calmMusicBtn');
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (calmMusicEnabled && !calmMusicStarted) startCalmAmbientMusic();
+    }
+
+    function startCalmAmbientMusic() {
+      if (calmMusicStarted || !calmMusicEnabled) return;
+      calmMusicStarted = true;
+
+      const chords = [
+        [220.00, 261.63, 329.63, 392.00],
+        [174.61, 220.00, 261.63, 329.63],
+        [196.00, 246.94, 293.66, 349.23],
+        [164.81, 196.00, 246.94, 293.66]
+      ];
+      let idxStep = 0;
+
+      function stepMusic() {
+        if (!calmMusicEnabled) {
+          calmMusicStarted = false;
+          return;
+        }
+        try {
+          if (audioCtx && audioCtx.state === 'running') {
+            const now = audioCtx.currentTime;
+            const currentChord = chords[idxStep % chords.length];
+            idxStep++;
+
+            currentChord.forEach((f, i) => {
+              const osc = audioCtx.createOscillator();
+              const gain = audioCtx.createGain();
+              osc.type = i % 2 === 0 ? 'triangle' : 'sine';
+              osc.frequency.setValueAtTime(f, now + i * 0.3);
+
+              gain.gain.setValueAtTime(0.0001, now + i * 0.3);
+              gain.gain.linearRampToValueAtTime(0.16, now + i * 0.3 + 0.15);
+              gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.3 + 1.5);
+
+              osc.connect(gain);
+              gain.connect(audioCtx.destination);
+              osc.start(now + i * 0.3);
+              osc.stop(now + i * 0.3 + 1.7);
+            });
+          }
+        } catch (e) {}
+        calmTimer = setTimeout(stepMusic, 2800);
+      }
+      stepMusic();
+    }
+
+    function stopCalmAmbientMusic() {
+      calmMusicStarted = false;
+      if (calmTimer) clearTimeout(calmTimer);
+    }
+
+    calmMusicBtn.addEventListener('click', () => {
+      calmMusicEnabled = !calmMusicEnabled;
+      if (calmMusicEnabled) {
+        calmMusicBtn.textContent = "🎵 Musik";
+        calmMusicBtn.classList.add('active-calm');
+        calmMusicBtn.classList.remove('muted');
+        initAudio();
+        startCalmAmbientMusic();
+      } else {
+        calmMusicBtn.textContent = "🎵 OFF";
+        calmMusicBtn.classList.remove('active-calm');
+        calmMusicBtn.classList.add('muted');
+        stopCalmAmbientMusic();
+      }
+    });
+
+    soundToggleBtn.addEventListener('click', () => {
+      sfxEnabled = !sfxEnabled;
+      if (sfxEnabled) {
+        soundToggleBtn.textContent = "🔊 SFX";
+        soundToggleBtn.classList.remove('muted');
+        initAudio();
+        playTone(660, 'sine', 0.15, 0.5);
+      } else {
+        soundToggleBtn.textContent = "🔇 OFF";
+        soundToggleBtn.classList.add('muted');
+      }
+    });
+
+    document.body.addEventListener('touchstart', initAudio, { once: true });
+    document.body.addEventListener('click', initAudio, { once: true });
+
+    function playTone(freq, type, duration, vol = 0.45, slideTo = null) {
+      if (!sfxEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+        if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + duration);
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + duration);
+      } catch (e) {}
+    }
+
+    function playSpinTick(step, total) {
+      const baseFreq = 250 + (step / total) * 450;
+      playTone(baseFreq, 'triangle', 0.08, 0.4, baseFreq * 1.2);
+    }
+
+    function playSummonSound() {
+      if (!sfxEnabled) return;
+      playTone(100.00, 'sine', 0.9, 0.6, 35.0);
+      const notes = [330, 440, 554.37, 659.25, 880, 1108.73];
+      notes.forEach((f, i) => {
+        setTimeout(() => {
+          playTone(f, 'triangle', 0.5, 0.42);
+        }, i * 75);
+      });
+    }
+
+    const bgCanvas = document.getElementById('aura-bg-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    let auraOrbsArr = [];
+    let currentAuraColor = "#ff2a85";
+
+    function resizeBgCanvas() {
+      bgCanvas.width = bgCanvas.parentElement.clientWidth;
+      bgCanvas.height = bgCanvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeBgCanvas);
+    resizeBgCanvas();
+
+    for (let i = 0; i < 25; i++) {
+      auraOrbsArr.push({
+        x: Math.random() * bgCanvas.width,
+        y: Math.random() * bgCanvas.height,
+        r: Math.random() * 3 + 1,
+        vy: -(Math.random() * 0.5 + 0.2),
+        vx: (Math.random() - 0.5) * 0.3,
+        alpha: Math.random() * 0.5 + 0.2,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+
+    function animateBg() {
+      bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+      auraOrbsArr.forEach(p => {
+        p.y += p.vy;
+        p.x += p.vx;
+        p.pulse += 0.04;
+        if (p.y < -10) {
+          p.y = bgCanvas.height + 10;
+          p.x = Math.random() * bgCanvas.width;
+        }
+        const alpha = Math.max(0.1, Math.min(0.9, p.alpha + Math.sin(p.pulse) * 0.25));
+        bgCtx.save();
+        bgCtx.beginPath();
+        bgCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        bgCtx.fillStyle = currentAuraColor;
+        bgCtx.shadowBlur = 10;
+        bgCtx.shadowColor = currentAuraColor;
+        bgCtx.globalAlpha = alpha;
+        bgCtx.fill();
+        bgCtx.restore();
+      });
+      requestAnimationFrame(animateBg);
+    }
+    animateBg();
+
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const cCtx = confettiCanvas.getContext('2d');
+    let confettiParts = [];
+
+    function resizeConfetti() {
+      confettiCanvas.width = confettiCanvas.parentElement.clientWidth;
+      confettiCanvas.height = confettiCanvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeConfetti);
+    resizeConfetti();
+
+    function launchConfetti(pColor, sColor) {
+      const colors = [pColor, sColor, '#ffd000', '#ffffff', '#ff2a85'];
+      confettiParts = [];
+      for (let i = 0; i < 65; i++) {
+        confettiParts.push({
+          x: confettiCanvas.width / 2,
+          y: confettiCanvas.height * 0.4,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.8) * 11,
+          size: Math.random() * 5 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          rot: Math.random() * 360
+        });
+      }
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      let active = false;
+      confettiParts.forEach(p => {
+        if (p.alpha > 0.02) {
+          active = true;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35;
+          p.alpha -= 0.018;
+          p.rot += 6;
+          cCtx.save();
+          cCtx.globalAlpha = p.alpha;
+          cCtx.translate(p.x, p.y);
+          cCtx.rotate((p.rot * Math.PI) / 180);
+          cCtx.fillStyle = p.color;
+          cCtx.shadowBlur = 6;
+          cCtx.shadowColor = p.color;
+          cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          cCtx.restore();
+        }
+      });
+      if (active) requestAnimationFrame(animateConfetti);
+    }
+
+    const phoneFrame = document.getElementById('phoneFrame');
+    const resultCard = document.getElementById('resultCard');
+    const orb1 = document.getElementById('orb1');
+    const orb2 = document.getElementById('orb2');
+
+    const nameInput = document.getElementById('nameInput');
+    const spinBtn = document.getElementById('spinBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const auraWrapper = document.getElementById('auraWrapper');
+    const viewerNameEl = document.getElementById('viewerName');
+    const khodamEmojiEl = document.getElementById('khodamEmoji');
+    const khodamNameEl = document.getElementById('khodamName');
+    const khodamPowerEl = document.getElementById('khodamPower');
+    const moodLine1El = document.getElementById('moodLine1');
+    const moodLine2El = document.getElementById('moodLine2');
+    const rezekiLine1El = document.getElementById('rezekiLine1');
+    const rezekiLine2El = document.getElementById('rezekiLine2');
+    const warningValueEl = document.getElementById('warningValue');
+    const auraValueEl = document.getElementById('auraValue');
+    const luckValueEl = document.getElementById('luckValue');
+    const quoteValueEl = document.getElementById('quoteValue');
+    const historyList = document.getElementById('historyList');
+
+    let isSpinning = false;
+    let historyNames = [];
+
+    function pickRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function applyTheme(item) {
+      phoneFrame.style.background = item.bgGradient;
+      resultCard.style.background = item.cardBg;
+      orb1.style.background = item.orb1;
+      orb2.style.background = item.orb2;
+      document.documentElement.style.setProperty('--aura-primary', item.aura.primary);
+      document.documentElement.style.setProperty('--aura-secondary', item.aura.secondary);
+      currentAuraColor = item.aura.primary;
+    }
+
+    function updateHistoryUI() {
+      if (historyNames.length === 0) {
+        historyList.innerHTML = `
+          <span class="history-chip" onclick="quickTest('ica')">+ ica</span>
+          <span class="history-chip" onclick="quickTest('Sultan_Galau')">+ Sultan_Galau</span>
+        `;
+        return;
+      }
+      historyList.innerHTML = '';
+      historyNames.forEach(n => {
+        const chip = document.createElement('span');
+        chip.className = 'history-chip';
+        chip.textContent = '✨ ' + n;
+        chip.addEventListener('click', () => quickTest(n));
+        historyList.appendChild(chip);
+      });
+    }
+
+    function quickTest(sampleName) {
+      nameInput.value = sampleName;
+      startSpin();
+    }
+    window.quickTest = quickTest;
+
+    function triggerCtaAction(actionText) {
+      playTone(880, 'sine', 0.1, 0.4);
+      launchConfetti('#ff2a85', '#00f0ff');
+      viewerNameEl.textContent = actionText;
+      khodamEmojiEl.textContent = '💖';
+      khodamNameEl.textContent = "TERIMA KASIH DUKUNGANNYA!";
+      khodamPowerEl.textContent = "Semoga rezekinya lancar & makin hoki!";
+      moodLine1El.textContent = "Aura kebaikan dan support kalian luar biasa! ✨";
+      moodLine2El.textContent = "Yuk terus ramaikan live RUANG SAD!";
+      rezekiLine1El.textContent = "Siap-siap dapet kejutan cuan mendadak!";
+      rezekiLine2El.textContent = "Nama yang aktif gift & tap-tap bakal diprioritaskan!";
+      warningValueEl.textContent = "Peringatan: Jangan lupa cek link donate di bio ya guys!";
+      auraValueEl.textContent = "💖 Sultan Dermawan";
+      luckValueEl.textContent = "⚡ 100%++";
+      quoteValueEl.textContent = '"Terima kasih banyak atas support mawar, tap-tap, share, & follow-nya!"';
+    }
+    window.triggerCtaAction = triggerCtaAction;
+
+    function startSpin() {
+      const rawName = nameInput.value.trim();
+      if (!rawName) {
+        nameInput.focus();
+        nameInput.style.borderColor = '#ff2a85';
+        playTone(200, 'sawtooth', 0.15, 0.35);
+        setTimeout(() => (nameInput.style.borderColor = 'rgba(255, 42, 133, 0.55)'), 600);
+        return;
+      }
+      if (isSpinning) return;
+
+      initAudio();
+      isSpinning = true;
+      spinBtn.disabled = true;
+      spinBtn.textContent = "⏳ Memanggil Khodam Galau...";
+      auraWrapper.classList.remove('reveal');
+      auraWrapper.classList.add('rolling');
+
+      viewerNameEl.textContent = rawName;
+
+      let ticks = 0;
+      const totalTicks = 18;
+      const interval = setInterval(() => {
+        ticks++;
+        playSpinTick(ticks, totalTicks);
+
+        const tempItem = pickRandom(poolGalau);
+        applyTheme(tempItem);
+
+        khodamEmojiEl.textContent = tempItem.khodam.emoji;
+        khodamNameEl.textContent = tempItem.khodam.name;
+        khodamPowerEl.textContent = "Mendeteksi getaran galau...";
+
+        moodLine1El.textContent = tempItem.mood[0];
+        moodLine2El.textContent = tempItem.mood[1];
+        rezekiLine1El.textContent = tempItem.rezeki[0];
+        rezekiLine2El.textContent = tempItem.rezeki[1];
+        warningValueEl.textContent = tempItem.warning;
+
+        auraValueEl.textContent = tempItem.aura.label;
+        luckValueEl.textContent = "⚡ " + (Math.floor(Math.random() * 50) + 25) + "%";
+
+        if (ticks >= totalTicks) {
+          clearInterval(interval);
+          finishSpin(rawName);
+        }
+      }, 75);
+    }
+
+    function finishSpin(name) {
+      auraWrapper.classList.remove('rolling');
+      void auraWrapper.offsetWidth;
+      auraWrapper.classList.add('reveal');
+
+      const finalItem = pickRandom(poolGalau);
+      const finalLuck = Math.floor(Math.random() * 55) + 20;
+      const finalQuote = pickRandom(fallbackQuotes);
+
+      applyTheme(finalItem);
+
+      khodamEmojiEl.textContent = finalItem.khodam.emoji;
+      khodamNameEl.textContent = finalItem.khodam.name;
+      khodamPowerEl.textContent = "Khodam galau terikat kuat dengan auramu!";
+
+      moodLine1El.textContent = finalItem.mood[0];
+      moodLine2El.textContent = finalItem.mood[1];
+      rezekiLine1El.textContent = finalItem.rezeki[0];
+      rezekiLine2El.textContent = finalItem.rezeki[1];
+      warningValueEl.textContent = finalItem.warning;
+
+      auraValueEl.textContent = finalItem.aura.label;
+      luckValueEl.textContent = "⚡ " + finalLuck + "%";
+      quoteValueEl.textContent = finalQuote;
+
+      playSummonSound();
+      launchConfetti(finalItem.aura.primary, finalItem.aura.secondary);
+
+      historyNames = [name, ...historyNames.filter(i => i.toLowerCase() !== name.toLowerCase())].slice(0, 12);
+      updateHistoryUI();
+
+      isSpinning = false;
+      spinBtn.disabled = false;
+      spinBtn.textContent = "🔍 Cek sekarang";
+      nameInput.value = "";
+    }
+
+    spinBtn.addEventListener('click', startSpin);
+
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.keyCode === 13) {
+        e.preventDefault();
+        nameInput.blur();
+        startSpin();
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      nameInput.value = "";
+      nameInput.focus();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      historyNames = [];
+      updateHistoryUI();
+      applyTheme({
+        bgGradient: "radial-gradient(circle at 50% 10%, #32103f 0%, #0c061a 55%, #03010a 100%)",
+        cardBg: "rgba(20, 14, 48, 0.98)",
+        orb1: "#9d4edd",
+        orb2: "#ff2a85",
+        aura: { label: "💔 Patah Hati", primary: "#ff2a85", secondary: "#9d4edd" }
+      });
+      viewerNameEl.textContent = "Ketik Nama Penonton 👇";
+      khodamEmojiEl.textContent = "🥀";
+      khodamNameEl.textContent = "Menunggu Pemanggilan...";
+      khodamPowerEl.textContent = "1.000.000+ pilihan khodam lokal & galau siap terdeteksi!";
+      moodLine1El.textContent = "Siap mendeteksi isi hati & pikiran...";
+      moodLine2El.textContent = "Tunggu sebentar sampai energi terhubung! ✨";
+      rezekiLine1El.textContent = "Menunggu nama masuk untuk dicek!";
+      rezekiLine2El.textContent = "Ketik nama penonton yang kirim gift atau komen.";
+      warningValueEl.textContent = "Hati-hati dalam mengambil keputusan besar ke depannya!";
+      auraValueEl.textContent = "💔 Patah Hati";
+      luckValueEl.textContent = "⚡ --%";
+      quoteValueEl.textContent = '"Yang udah tap-tap layar & kasih gift, namanya langsung dicek khodam & rezekinya!"';
+      auraWrapper.classList.remove('reveal');
+      playTone(400, 'sine', 0.15, 0.4);
+    });
+  </script>
+</body>
+</html>
